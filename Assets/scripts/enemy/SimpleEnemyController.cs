@@ -3,7 +3,9 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class SimpleEnemyController : MonoBehaviour {
-  
+
+  public SimpleEnemyStatsSO settings;
+
   private HealthController enemyHealth;
   private StaggerController stagger;
   private CharacterEventController enemyEventController;

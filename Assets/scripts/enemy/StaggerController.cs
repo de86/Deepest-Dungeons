@@ -4,14 +4,10 @@ using UnityEngine;
 
 public class StaggerController : MonoBehaviour {
   
-  [SerializeField]
-  private float staggerTime;
-  [SerializeField]
-  private float staggerLimit;
-  
   public bool isStaggered { get; private set; }
-  public FloatSO stagger;
 
+  [SerializeField]
+  private SimpleEnemyStatsSO stats;
   private CharacterEventController enemyEventController;
 
 
@@ -24,7 +20,7 @@ public class StaggerController : MonoBehaviour {
 
   void Start ()
   {
-    stagger.val = 0;
+    stats.ResetStagger();
   }
 
 
@@ -38,9 +34,10 @@ public class StaggerController : MonoBehaviour {
   {
     if ( !isStaggered )
     {
-      stagger.val += staggerAmount;
+      float currentStagger = stats.GetStagger();
+      stats.SetStagger(currentStagger + staggerAmount);
 
-      if ( stagger.val >= staggerLimit )
+      if ( currentStagger >= stats.GetStaggerLimit() )
       {
         StartCoroutine(Stagger());
       }
@@ -51,7 +48,7 @@ public class StaggerController : MonoBehaviour {
   private void ResetStagger ()
   {
     isStaggered = false;
-    stagger.val = 0;
+    stats.ResetStagger();
     enemyEventController.StaggerEnd();
   }
 
@@ -62,7 +59,7 @@ public class StaggerController : MonoBehaviour {
     BattleEventController.EnemyStaggered();
     enemyEventController.Stagger();
 
-    yield return new WaitForSeconds(staggerTime);
+    yield return new WaitForSeconds(stats.GetStaggerTime());
 
     ResetStagger();
   }

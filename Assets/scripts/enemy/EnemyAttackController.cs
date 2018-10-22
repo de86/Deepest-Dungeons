@@ -16,14 +16,9 @@ public class EnemyAttackController : MonoBehaviour {
   }
   private AttackState state = AttackState.Attacking;
 
-	
-  void Start ()
-  {
-    
-  }
 
 	// Update is called once per frame
-	void Update ()
+	public void Tick ()
   {
 		switch (state)
     {

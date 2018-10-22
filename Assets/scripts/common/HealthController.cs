@@ -5,16 +5,15 @@ using UnityEngine;
 public class HealthController : MonoBehaviour
 {
 
-  [SerializeField]
-  private FloatSO health;
-  
-  private CharacterEventController enemyEventController;
-
   public float initialHealth;
 
+  [SerializeField]
+  private SimpleEnemyStatsSO stats;
+  private CharacterEventController enemyEventController;
 
   void Awake ()
   {
+
     enemyEventController = gameObject.GetComponent<CharacterEventController>();
     enemyEventController.receiveDamage += OnReceiveHit;
   }
@@ -22,40 +21,35 @@ public class HealthController : MonoBehaviour
 
   void Start ()
   {
-    health.val = initialHealth;
-  }
-
-
-  private void SetHealth (float initialHealth)
-  {
-    this.health.val = initialHealth;
+    stats.SetHealth(initialHealth);
   }
 
 
   private void ModifyHealth (float increment)
   {
-    this.health.val += increment;
+    stats.SetHealth(stats.GetHealth() + increment);
   }
 
 
   public float GetHealth ()
   {
-    return this.health.val;
+    return stats.GetHealth();
   }
 
 
   public bool GetIsAlive ()
   {
-    return this.health.val > 0;
+    return stats.GetHealth() > 0;
   }
 
 
   private void OnReceiveHit (float damage)
   {
-    this.health.val -= damage;
-    Debug.Log("Enemy Hit: " + this.health.val);
+    ModifyHealth(-damage);
+    float newHealth = stats.GetHealth();
+    Debug.Log("Enemy Hit: " + GetHealth());
 
-    if (this.health.val < 1) {
+    if (newHealth < 1) {
       enemyEventController.Kill();
     }
   }
